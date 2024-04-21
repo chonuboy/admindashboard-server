@@ -4,9 +4,12 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-mongoose.connect("mongodb://127.0.0.1:27017/dashboard").then(function(){
+var userArrLength;
+var productArrLength;
+
+mongoose.connect("mongodb+srv://chonu:123@cluster0.4ewp8p0.mongodb.net/dash?retryWrites=true&w=majority").then(function () {
   console.log("Connected with DB...")
-}).catch(function(){
+}).catch(function () {
   console.log("Failed to Connect")
 })
 
@@ -19,175 +22,114 @@ app.listen(3001, function () {
 })
 
 
-var productRows = [
-  {
-    id: 1,
-    img: "https://store.sony.com.au/on/demandware.static/-/Sites-sony-master-catalog/default/dw1b537bbb/images/PLAYSTATION5W/PLAYSTATION5W.png",
-    title: "Playstation 5 Digital Edition",
-    color: "white",
-    producer: "Sony",
-    price: "$250.99",
-    createdAt: "01.02.2024",
-    inStock: "true",
-  },
-  {
-    id: 2,
-    img: "https://www.pngmart.com/files/6/Dell-Laptop-PNG-Image.png",
-    title: "Dell Laptop KR211822",
-    color: "black",
-    producer: "Dell",
-    price: "$499.99",
-    createdAt: "01.02.2024",
-    inStock: "true",
-  },
-  {
-    id: 3,
-    img: "http://images.samsung.com/is/image/samsung/uk-led-tv-hg40ed670ck-hg40ed670ckxxu-001-front",
-    title: "Samsung TV 4K SmartTV",
-    color: "gray",
-    producer: "Samsung",
-    price: "$999.49",
-    createdAt: "01.02.2024",
-    inStock: "true",
-  },
-  {
-    id: 4,
-    img: "https://raylo.imgix.net/iphone-14-blue.png",
-    title: "Apple Iphone 14 Pro Max",
-    color: "white",
-    producer: "Apple",
-    price: "$799.49",
-    createdAt: "01.02.2024",
-    inStock: "true",
-  },
-  {
-    id: 5,
-    img: "https://www.signify.com/b-dam/signify/en-aa/about/news/2020/20200903-movie-night-essentials-popcorn-ice-cream-and-the-new-philips-hue-play-gradient-lightstrip/packaging-lighstrip.png",
-    title: "Philips Hue Play Gradient",
-    color: "rainbow",
-    producer: "Philips",
-    price: "$39.99",
-    createdAt: "01.02.2024",
-  },
-  {
-    id: 6,
-    img: "https://www.smartworld.it/wp-content/uploads/2019/09/High_Resolution_PNG-MX-Master-3-LEFT-GRAPHITE.png",
-    title: "Logitech MX Master 3",
-    color: "black",
-    producer: "Logitech",
-    price: "$59.49",
-    createdAt: "01.02.2024",
-    inStock: "true",
-  },
-  {
-    id: 7,
-    img: "https://www.pngarts.com/files/7/Podcast-Mic-PNG-Picture.png",
-    title: "Rode Podcast Microphone",
-    color: "gray",
-    producer: "Rode",
-    price: "$119.49",
-    createdAt: "01.02.2024",
-  },
-  {
-    id: 8,
-    img: "https://5.imimg.com/data5/SW/VM/MY-5774620/toshiba-split-ac-2-ton-3-star-rated-ras-24s3ks-500x500.png",
-    title: "Toshiba Split AC 2",
-    color: "white",
-    producer: "Toshiba",
-    price: "$899.99",
-    createdAt: "01.02.2024",
-    inStock: "true",
-  },
-  {
-    id: 9,
-    img: "https://img.productz.com/review_image/102489/preview_sony-kdl-50w800b-50-inch-hdtv-review-superb-picture-102489.png",
-    title: "Sony Bravia KDL-47W805A",
-    color: "black",
-    producer: "Sony",
-    price: "$970.49",
-    createdAt: "01.02.2024",
-  },
-  {
-    id: 10,
-    img: "https://venturebeat.com/wp-content/uploads/2015/07/As_AO1-131_gray_nonglare_win10_03.png?fit=1338%2C1055&strip=all",
-    title: "Acer Laptop 16 KL-4804",
-    color: "black",
-    producer: "Acer",
-    price: "$599.99",
-    createdAt: "01.02.2024",
-    inStock: "true",
-  },
-];
+// Schema for Users..
+const users = mongoose.model("users", {
+  id: Number,
+  firstName: String,
+  lastName: String,
+  email: String,
+  phone: String,
+  createdAt: String,
+  verified: Boolean
+}, "users")
 
-
-app.post("/api/user", function (req, res) {
-  userRows = [...userRows, {
-    id: userRows.length + 1,
-    firstName: req.body.formData[0].value,
-    lastName: req.body.formData[1].value,
-    email: req.body.formData[2].value,
-    phone: req.body.formData[3].value,
-    createdAt: req.body.formData[4].value,
-    verified: req.body.formData[5].value
-  }]
-})
-
-app.delete("/api/users/delete/:id", function (req, res) {
-  const id = parseInt(req.params.id)
-  filteredUserRows = userRows.filter(item => item.id !== id)
-  if (filteredUserRows.length < userRows.length) {
-    userRows = filteredUserRows;
-    res.status(200).json({ message: "Data Deleted Successfully..." })
-  } else {
-    re.status(404).json({ message: "Data Not Found..." })
-  }
-})
-
-  // res.send(userRows)
-  const users = mongoose.model("users", {
+// Schema for Products...
+const products=mongoose.model("products",{
     id: Number,
-    img: String,
     title: String,
     color: String,
     producer: String,
     price: String,
     createdAt: String,
-    verified:String
-  },"users")
+    inStock: Boolean
+},"products")
 
-  app.get("/api/user", async function (req, res) {
-    try {
-      const retdata = await users.find();
-      res.send(retdata);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Internal Server Error");
-    }
+
+app.get("/api/user", async function (req, res) {
+  try {
+    const retUsers = await users.find();
+    res.status(200).json(retUsers);
+    userArrLength=retUsers.length+1;
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
 })
 
+app.post("/api/user",function (req, res) {
+  try{
+    const userArr={
+    id:userArrLength,
+    firstName:req.body.formData[0].value,
+    lastName: req.body.formData[1].value,
+    email: req.body.formData[2].value,
+    phone: req.body.formData[3].value,
+    createdAt: req.body.formData[4].value,
+    verified: req.body.formData[5].value}
+  users.insertMany([userArr]).then(function(){
+    res.status(201).json({message:"User Added Successfully"});
+  })
+}catch(err){
+  console.log(err);
+  res.status(500).send("Internal Server Error");
+}
+})
+
+app.delete("/api/users/delete/:id", function (req, res) {
+  const deluserId = parseInt(req.params.id)
+  try{
+    users.deleteOne({id:deluserId}).then(function(){
+      res.status(200).json({ message: "Data Deleted Successfully..." })
+    })
+    
+  } catch(err) {
+    console.log(err);
+    res.status.send("Error while Deleting User...")
+  }
+})
+
+app.get("/api/product", async function (req, res) {
+  try {
+    const retProducts = await products.find();
+    res.status(200).json(retProducts);
+    productArrLength=retProducts.length+1;
+  }
+  catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 app.post("/api/product", function (req, res) {
-  productRows = [...productRows, {
-    id: productRows.length + 1,
+  try{
+  const productArr ={
+    id: productArrLength,
     title: req.body.formData[0].value,
     color: req.body.formData[1].value,
     producer: req.body.formData[2].value,
     price: req.body.formData[3].value,
     createdAt: req.body.formData[4].value,
-    inStock: req.body.formData[5].value
-  }]
-})
-
-app.delete("/api/products/delete/:id", function (req, res) {
-  const id = parseInt(req.params.id)
-  filteredProductRows = productRows.filter(item => item.id !== id)
-  if (filteredProductRows.length < productRows.length) {
-    productRows = filteredProductRows;
-    res.status(200).json({ message: "Data Deleted Successfully..." })
-  } else {
-    re.status(404).json({ message: "Data Not Found..." })
+    inStock: req.body.formData[5].value}
+    products.insertMany([productArr]).then(function(){
+      res.status(201).json({message:"Product Added Successfully..."});
+    })
+  }
+  catch(err){
+    console.log(err);
+    res.status(500).send("Internal Server Error");
   }
 })
 
-app.get("/api/product", function (req, res) {
-  res.send(productRows)
-})
+app.delete("/api/products/delete/:id", function (req, res) {
+    const delproductId = parseInt(req.params.id);
+    try{
+      products.deleteOne({id:delproductId}).then(function(){
+        res.status(200).json({ message: "Data Deleted Successfully..." });
+      })
+    } 
+    catch(err){
+        console.log(err);
+        res.status(500).send("Error while Deleting Product...")
+    }
+});
+
