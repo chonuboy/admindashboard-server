@@ -154,11 +154,12 @@ mongoose.connect("mongodb+srv://chonu:123@cluster0.4ewp8p0.mongodb.net/dash?retr
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 10000;
+const HOST="0.0.0.0";
 
-app.listen(PORT, "0.0.0.0", function () {
-  console.log(`Server Started on port ${PORT}`)
-})
+app.listen(PORT, HOST, function () {
+  console.log(`Server Started on host:${HOST} port: ${PORT}`)
+});
 
 const usersSchema = new mongoose.Schema({
   id: Number,
