@@ -1,31 +1,166 @@
+// const express = require("express");
+// const cors = require("cors");
+// const mongoose = require("mongoose");
+
+// const app = express();
+
+// var userArrLength;
+// var productArrLength;
+
+// mongoose.connect("mongodb+srv://chonu:123@cluster0.4ewp8p0.mongodb.net/dash?retryWrites=true&w=majority").then(function () {
+//   console.log("Connected with DB...")
+// }).catch(function (err) {
+//   console.log("Failed to Connect:",err)
+// })
+
+// app.use(cors())
+
+// app.use(express.json())
+
+// const PORT=process.env.PORT || 3001;
+
+// app.listen(PORT,"0.0.0.0", function () {
+//   console.log(`Server Started on port ${PORT}`)
+// })
+
+
+// // Schema for Users..
+// const users = mongoose.model("users", {
+//   id: Number,
+//   firstName: String,
+//   lastName: String,
+//   email: String,
+//   phone: String,
+//   createdAt: String,
+//   verified: Boolean
+// }, "users")
+
+
+// // Schema for Products...
+// const products=mongoose.model("products",{
+//     id: Number,
+//     title: String,
+//     color: String,
+//     producer: String,
+//     price: String,
+//     createdAt: String,
+//     inStock: Boolean
+// },"products")
+
+
+// app.get("/api/user", async function (req, res) {
+//   try {
+//     const retUsers = await users.find();
+//     res.status(200).json(retUsers);
+//     userArrLength=retUsers.length+1;
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Internal Server Error");
+//   }
+// })
+
+// app.post("/api/user",function (req, res) {
+//   try{
+//     const userArr={
+//     id:userArrLength,
+//     firstName:req.body.formData[0].value,
+//     lastName: req.body.formData[1].value,
+//     email: req.body.formData[2].value,
+//     phone: req.body.formData[3].value,
+//     createdAt: req.body.formData[4].value,
+//     verified: req.body.formData[5].value}
+//   users.insertMany([userArr]).then(function(){
+//     res.status(201).json({message:"User Added Successfully"});
+//   })
+// }catch(err){
+//   console.log(err);
+//   res.status(500).send("Internal Server Error");
+// }
+// })
+
+// app.delete("/api/users/delete/:id", function (req, res) {
+//   const deluserId = parseInt(req.params.id)
+//   try{
+//     users.deleteOne({id:deluserId}).then(function(){
+//       res.status(200).json({ message: "Data Deleted Successfully..." })
+//     })
+    
+//   } catch(err) {
+//     console.log(err);
+//     res.status.send("Error while Deleting User...")
+//   }
+// })
+
+// app.get("/api/product", async function (req, res) {
+//   try {
+//     const retProducts = await products.find();
+//     res.status(200).json(retProducts);
+//     productArrLength=retProducts.length+1;
+//   }
+//   catch (err) {
+//     console.error(err);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
+
+// app.post("/api/product", function (req, res) {
+//   try{
+//   const productArr ={
+//     id: productArrLength,
+//     title: req.body.formData[0].value,
+//     color: req.body.formData[1].value,
+//     producer: req.body.formData[2].value,
+//     price: req.body.formData[3].value,
+//     createdAt: req.body.formData[4].value,
+//     inStock: req.body.formData[5].value}
+//     products.insertMany([productArr]).then(function(){
+//       res.status(201).json({message:"Product Added Successfully..."});
+//     })
+//   }
+//   catch(err){
+//     console.log(err);
+//     res.status(500).send("Internal Server Error");
+//   }
+// })
+
+// app.delete("/api/products/delete/:id", function (req, res) {
+//     const delproductId = parseInt(req.params.id);
+//     try{
+//       products.deleteOne({id:delproductId}).then(function(){
+//         res.status(200).json({ message: "Data Deleted Successfully..." });
+//       })
+//     } 
+//     catch(err){
+//         console.log(err);
+//         res.status(500).send("Error while Deleting Product...")
+//     }
+// });
+
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
 const app = express();
 
-var userArrLength;
-var productArrLength;
+let userArrLength = 0;
+let productArrLength = 0;
 
 mongoose.connect("mongodb+srv://chonu:123@cluster0.4ewp8p0.mongodb.net/dash?retryWrites=true&w=majority").then(function () {
-  console.log("Connected with DB...")
+  console.log("Connected with DB...");
 }).catch(function (err) {
-  console.log("Failed to Connect:",err)
+  console.log("Failed to Connect:", err)
 })
 
-app.use(cors())
+app.use(cors());
+app.use(express.json());
 
-app.use(express.json())
+const PORT = process.env.PORT || 3001;
 
-const PORT=process.env.PORT || 3001;
-
-app.listen(PORT,"0.0.0.0", function () {
+app.listen(PORT, "0.0.0.0", function () {
   console.log(`Server Started on port ${PORT}`)
 })
 
-
-// Schema for Users..
-const users = mongoose.model("users", {
+const usersSchema = new mongoose.Schema({
   id: Number,
   firstName: String,
   lastName: String,
@@ -33,61 +168,59 @@ const users = mongoose.model("users", {
   phone: String,
   createdAt: String,
   verified: Boolean
-}, "users")
+});
 
+const users = mongoose.model("users", usersSchema, "users");
 
-// Schema for Products...
-const products=mongoose.model("products",{
-    id: Number,
-    title: String,
-    color: String,
-    producer: String,
-    price: String,
-    createdAt: String,
-    inStock: Boolean
-},"products")
+const productsSchema = new mongoose.Schema({
+  id: Number,
+  title: String,
+  color: String,
+  producer: String,
+  price: String,
+  createdAt: String,
+  inStock: Boolean
+});
 
+const products = mongoose.model("products", productsSchema, "products");
 
 app.get("/api/user", async function (req, res) {
   try {
     const retUsers = await users.find();
     res.status(200).json(retUsers);
-    userArrLength=retUsers.length+1;
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ error: "Internal Server Error" });
   }
 })
 
-app.post("/api/user",function (req, res) {
-  try{
-    const userArr={
-    id:userArrLength,
-    firstName:req.body.formData[0].value,
-    lastName: req.body.formData[1].value,
-    email: req.body.formData[2].value,
-    phone: req.body.formData[3].value,
-    createdAt: req.body.formData[4].value,
-    verified: req.body.formData[5].value}
-  users.insertMany([userArr]).then(function(){
-    res.status(201).json({message:"User Added Successfully"});
-  })
-}catch(err){
-  console.log(err);
-  res.status(500).send("Internal Server Error");
-}
+app.post("/api/user", async function (req, res) {
+  try {
+    const userArr = {
+      id: ++userArrLength,
+      firstName: req.body.formData[0].value,
+      lastName: req.body.formData[1].value,
+      email: req.body.formData[2].value,
+      phone: req.body.formData[3].value,
+      createdAt: req.body.formData[4].value,
+      verified: req.body.formData[5].value
+    };
+    await users.create(userArr);
+    res.status(201).json({ message: "User Added Successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 })
 
-app.delete("/api/users/delete/:id", function (req, res) {
+app.delete("/api/users/delete/:id", async function (req, res) {
   const deluserId = parseInt(req.params.id)
-  try{
-    users.deleteOne({id:deluserId}).then(function(){
-      res.status(200).json({ message: "Data Deleted Successfully..." })
-    })
-    
-  } catch(err) {
-    console.log(err);
-    res.status.send("Error while Deleting User...")
+  try {
+    await users.deleteOne({ id: deluserId });
+    res.status(200).json({ message: "Data Deleted Successfully..." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error while Deleting User..." });
   }
 })
 
@@ -95,44 +228,38 @@ app.get("/api/product", async function (req, res) {
   try {
     const retProducts = await products.find();
     res.status(200).json(retProducts);
-    productArrLength=retProducts.length+1;
-  }
-  catch (err) {
+  } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
-app.post("/api/product", function (req, res) {
-  try{
-  const productArr ={
-    id: productArrLength,
-    title: req.body.formData[0].value,
-    color: req.body.formData[1].value,
-    producer: req.body.formData[2].value,
-    price: req.body.formData[3].value,
-    createdAt: req.body.formData[4].value,
-    inStock: req.body.formData[5].value}
-    products.insertMany([productArr]).then(function(){
-      res.status(201).json({message:"Product Added Successfully..."});
-    })
-  }
-  catch(err){
-    console.log(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ error: "Internal Server Error" });
   }
 })
 
-app.delete("/api/products/delete/:id", function (req, res) {
-    const delproductId = parseInt(req.params.id);
-    try{
-      products.deleteOne({id:delproductId}).then(function(){
-        res.status(200).json({ message: "Data Deleted Successfully..." });
-      })
-    } 
-    catch(err){
-        console.log(err);
-        res.status(500).send("Error while Deleting Product...")
-    }
-});
+app.post("/api/product", async function (req, res) {
+  try {
+    const productArr = {
+      id: ++productArrLength,
+      title: req.body.formData[0].value,
+      color: req.body.formData[1].value,
+      producer: req.body.formData[2].value,
+      price: req.body.formData[3].value,
+      createdAt: req.body.formData[4].value,
+      inStock: req.body.formData[5].value
+    };
+    await products.create(productArr);
+    res.status(201).json({ message: "Product Added Successfully..." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
 
+app.delete("/api/products/delete/:id", async function (req, res) {
+  const delproductId = parseInt(req.params.id);
+  try {
+    await products.deleteOne({ id: delproductId });
+    res.status(200).json({ message: "Data Deleted Successfully..." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error while Deleting Product..." });
+  }
+})
