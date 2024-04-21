@@ -154,7 +154,7 @@ mongoose.connect("mongodb+srv://chonu:123@cluster0.4ewp8p0.mongodb.net/dash?retr
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 8080;
 const HOST="0.0.0.0";
 
 app.listen(PORT, HOST, function () {
