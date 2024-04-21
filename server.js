@@ -7,10 +7,7 @@ const app = express();
 var userArrLength;
 var productArrLength;
 
-mongoose.connect("mongodb+srv://chonu:123@cluster0.4ewp8p0.mongodb.net/dash?retryWrites=true&w=majority",{
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(function () {
+mongoose.connect("mongodb+srv://chonu:123@cluster0.4ewp8p0.mongodb.net/dash?retryWrites=true&w=majority").then(function () {
   console.log("Connected with DB...")
 }).catch(function (err) {
   console.log("Failed to Connect:",err)
