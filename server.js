@@ -7,18 +7,23 @@ const app = express();
 var userArrLength;
 var productArrLength;
 
-mongoose.connect("mongodb+srv://chonu:123@cluster0.4ewp8p0.mongodb.net/dash?retryWrites=true&w=majority").then(function () {
+mongoose.connect("mongodb+srv://chonu:123@cluster0.4ewp8p0.mongodb.net/dash?retryWrites=true&w=majority",{
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(function () {
   console.log("Connected with DB...")
-}).catch(function () {
-  console.log("Failed to Connect")
+}).catch(function (err) {
+  console.log("Failed to Connect:",err)
 })
 
 app.use(cors())
 
 app.use(express.json())
 
-app.listen(3001, function () {
-  console.log("Server Started...")
+const PORT=process.env.PORT || 3001;
+
+app.listen(PORT,"0.0.0.0", function () {
+  console.log(`Server Started on port ${PORT}`)
 })
 
 
@@ -32,6 +37,7 @@ const users = mongoose.model("users", {
   createdAt: String,
   verified: Boolean
 }, "users")
+
 
 // Schema for Products...
 const products=mongoose.model("products",{
